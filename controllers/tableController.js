@@ -31,6 +31,58 @@ const getAllTable = async (req, res) => {
   }
 };
 
+const createTable = async (req, res) => {
+  const { company_id, table_number } = req.body;
+  try {
+    // Créer un nouveau produit sans spécifier l'ID
+    const newTable = await company_table.create({
+      company_id, 
+      table_number: table_number
+    });
+
+    res.status(201).json(newTable);
+  } catch (error) {
+    console.error('Erreur lors de la création de la table:', error);
+    res.status(500).json({ message: 'Erreur serveur' });
+  }
+};
+
+const deleteTable = async (req, res) => {
+  const {id} = req.params;
+  try  {
+    const table = await company_table.findByPk(id);
+    await table.destroy(); // Supprimer la table
+    res.status(200).json({ message: "Table supprimée avec succès" });
+  } catch {
+    console.error("Erreur lors de la suppression de la table:", error);
+    res.status(500).json({ message: "Erreur lors de la suppression de la table" });
+  }
+}
+
+const updateTable = async (req, res) => {
+  const {id} = req.params;
+  const {table_number} = req.body
+  const table = await company_table.findByPk(id)
+  if (!table) {
+    return res.status(404).json({ message: 'Table non trouvé' });
+  }
+  try  {
+
+     // Mise à jour du produit
+    table.table_number = table_number;
+
+    // Sauvegarde du produit mis à jour
+    await table.save();
+    res.status(200).json({ message: "Table modifiée avec succès" });
+  } catch {
+    console.error("Erreur lors de la modification de la table:", error);
+    res.status(500).json({ message: "Erreur lors de la modification de la table" });
+  }
+}
+
 module.exports = {
   getAllTable,
+  createTable,
+  deleteTable,
+  updateTable
 };
