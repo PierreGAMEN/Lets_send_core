@@ -22,6 +22,11 @@ module.exports = (sequelize) => {
       allowNull: false,
       primaryKey: false,
     },
+    table_number: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      primaryKey: false,
+    },
     status: {
       type: DataTypes.STRING,
       defaultValue: 'preparation',
