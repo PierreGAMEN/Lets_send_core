@@ -23,7 +23,8 @@ const setupWebSocket = (server) => {
             const newOrder = await Order.create({
               product_id: item.id,
               table_id: order.id_table,
-              company_id: order.company_id, // Assurez-vous que la colonne company_id existe
+              company_id: order.company_id,
+              table_number: order.table_number,
               status: 'preparation',
             });
             orders.push(newOrder);
