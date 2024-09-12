@@ -4,6 +4,7 @@ const {
   createUser,
   updateUser,
   deleteUser,
+  getAllUsersByCompany,
 } = require("../controllers/authController");
 const router = express.Router();
 
@@ -11,6 +12,7 @@ const router = express.Router();
 
 router.post("/", getUser);
 router.post("/create", createUser);
+router.post("/getAllUsers", getAllUsersByCompany)
 router.put("/update/:id", updateUser);
 router.delete("/delete/:id", deleteUser);
 
