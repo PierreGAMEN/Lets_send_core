@@ -9,10 +9,26 @@ const { setupWebSocket } = require('./ws/websocket');
 const app = express();
 const port = process.env.PORT || 3000;
 
+;
+
+// Configuration des options CORS
+const corsOptions = {
+  origin: "http://localhost:5173", // Remplacez par votre domaine frontend
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Méthodes autorisées
+  credentials: true, // Autorise l'envoi de cookies ou autres credentials
+  allowedHeaders: ["Content-Type", "Authorization"], // Headers autorisés
+};
+
+// Appliquer CORS avec les options
+app.use(cors(corsOptions));
+
+// Gérer les requêtes OPTIONS (preflight)
+app.options("*", cors(corsOptions));
+
 // Middlewares
 app.use(express.json());
-app.use(cors());
-app.use('/api', routes);
+app.use('/api', routes)
+
 
 // Serveur HTTP
 const server = http.createServer(app);
