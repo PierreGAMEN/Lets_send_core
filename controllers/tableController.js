@@ -32,6 +32,25 @@ const getAllTable = async (req, res) => {
   }
 };
 
+const getOneTableWithCompanyIdAndTableNumber = async (req, res) => {
+  const { company_id, table_number } = req.params;
+  console.log(company_id, table_number);
+  try {
+    const existingTable = await company_table.findOne({
+      where: {
+        company_id: company_id,
+        table_number: table_number,
+      },
+    });
+    console.log(existingTable);
+
+    res.status(201).json(existingTable);
+  } catch {
+    console.error("Erreur lors de la récupération de la table", error);
+    res.status(500).json({ message: "Erreur serveur" });
+  }
+};
+
 const createTable = async (req, res) => {
   const { company_id, table_number } = req.body;
   try {
@@ -79,7 +98,6 @@ const updateTable = async (req, res) => {
   const { id } = req.params;
   const { table_number, company_id } = req.body;
 
-
   const table = await company_table.findByPk(id);
   if (!table) {
     return res.status(404).json({ message: "Table non trouvé" });
@@ -118,4 +136,5 @@ module.exports = {
   createTable,
   deleteTable,
   updateTable,
+  getOneTableWithCompanyIdAndTableNumber,
 };
