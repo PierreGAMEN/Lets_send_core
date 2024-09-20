@@ -11,6 +11,7 @@ const createOrder = async (req, res) => {
         product_id: item.id,
         table_id: id_table,
         company_id: company_id,
+        comment: item.comment
       });
       orders.push(newOrder);
     }

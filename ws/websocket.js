@@ -1,31 +1,32 @@
-const WebSocket = require('ws');
-const { Order } = require('../models'); // Assurez-vous que le chemin est correct
+const WebSocket = require("ws");
+const { Order } = require("../models"); // Assurez-vous que le chemin est correct
 
 const setupWebSocket = (server) => {
   const wss = new WebSocket.Server({ server });
 
-  wss.on('connection', (ws) => {
-    console.log('Client WebSocket connecté');
+  wss.on("connection", (ws) => {
+    console.log("Client WebSocket connecté");
 
-    ws.on('message', async (message) => {
+    ws.on("message", async (message) => {
       try {
         const data = JSON.parse(message);
         const { action } = data; // On récupère l'action d'abord
 
-        console.log('Message reçu:', { action }); // Log pour vérifier le contenu du message
+        console.log("Message reçu:", { action }); // Log pour vérifier le contenu du message
 
-        if (action === 'createOrder') {
+        if (action === "createOrder") {
           const { order } = data; // On récupère l'objet 'order' seulement si l'action est 'createOrder'
-          console.log('Message reçu:', { data });
+          console.log("Message reçu:", { data });
           const orders = [];
           for (const item of order.items) {
-            console.log(order.company_id)
+            console.log(order.company_id);
             const newOrder = await Order.create({
               product_id: item.id,
               table_id: order.id_table,
               company_id: order.company_id,
               table_number: order.table_number,
-              status: 'preparation',
+              status: "preparation",
+              comment: item.comment,
             });
             orders.push(newOrder);
           }
@@ -33,28 +34,47 @@ const setupWebSocket = (server) => {
           // Envoyer une confirmation aux clients
           wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({ action: 'orderStatus', status: 'success', orders }));
+              client.send(
+                JSON.stringify({
+                  action: "orderStatus",
+                  status: "success",
+                  orders,
+                })
+              );
             }
           });
-        } else if (action === 'orderUpdated') {
+        } else if (action === "orderUpdated") {
           const { orderId, status } = data; // On récupère 'orderId' et 'status' seulement si l'action est 'orderUpdated'
 
           // Envoyer une mise à jour aux clients
           wss.clients.forEach((client) => {
             if (client.readyState === WebSocket.OPEN) {
-              client.send(JSON.stringify({ action: 'orderStatus', status: 'updated', orderId, newStatus: status }));
+              client.send(
+                JSON.stringify({
+                  action: "orderStatus",
+                  status: "updated",
+                  orderId,
+                  newStatus: status,
+                })
+              );
             }
           });
         }
       } catch (error) {
-        console.error('Erreur lors du traitement du message:', error);
+        console.error("Erreur lors du traitement du message:", error);
 
-        ws.send(JSON.stringify({ action: 'orderStatus', status: 'error', message: 'Erreur lors du traitement de la commande' }));
+        ws.send(
+          JSON.stringify({
+            action: "orderStatus",
+            status: "error",
+            message: "Erreur lors du traitement de la commande",
+          })
+        );
       }
     });
 
-    ws.on('close', () => {
-      console.log('Client WebSocket déconnecté');
+    ws.on("close", () => {
+      console.log("Client WebSocket déconnecté");
     });
   });
 };

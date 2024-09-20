@@ -31,6 +31,9 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       defaultValue: 'preparation',
     },
+    comment: {
+      type: DataTypes.STRING,
+    },
   }, {
     tableName: 'order_table',
     timestamps: false,
