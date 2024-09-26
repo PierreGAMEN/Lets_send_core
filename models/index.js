@@ -15,6 +15,7 @@ const Product = require('./product')(sequelize);
 const company_table = require('./company_table')(sequelize);
 const Order = require('./order')(sequelize);
 const Users = require('./users')(sequelize);
+const Transaction = require('./transaction')(sequelize);
 
 // Définition des associations
 Company.hasMany(Product, { foreignKey: 'company_id', onDelete: 'CASCADE' });
@@ -40,5 +41,6 @@ module.exports = {
   Product,
   company_table,
   Order,
-  Users
+  Users,
+  Transaction
 };
