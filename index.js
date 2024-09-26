@@ -13,7 +13,7 @@ const port = process.env.PORT || 3000;
 
 // Configuration des options CORS
 const corsOptions = {
-  origin: "http://localhost:5173", // Remplacez par votre domaine frontend
+  origin: "http://192.168.1.19:5173", // Remplacez par votre domaine frontend
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"], // Méthodes autorisées
   credentials: true, // Autorise l'envoi de cookies ou autres credentials
   allowedHeaders: ["Content-Type", "Authorization"], // Headers autorisés
@@ -46,6 +46,6 @@ sequelize.authenticate()
   });
 
 // Démarrer le serveur
-server.listen(port, () => {
+server.listen(port, process.env.IPV6, () => {
   console.log(`Serveur démarré sur le port ${port}`);
 });
