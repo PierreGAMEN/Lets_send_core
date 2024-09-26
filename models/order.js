@@ -34,6 +34,10 @@ module.exports = (sequelize) => {
     comment: {
       type: DataTypes.STRING,
     },
+    payment: {
+      type: DataTypes.BOOLEAN,
+    },
+
   }, {
     tableName: 'order_table',
     timestamps: false,

@@ -27,6 +27,7 @@ const setupWebSocket = (server) => {
               table_number: order.table_number,
               status: "preparation",
               comment: item.comment,
+              payment: order.payment,
             });
             orders.push(newOrder);
           }
@@ -55,6 +56,38 @@ const setupWebSocket = (server) => {
                   status: "updated",
                   orderId,
                   newStatus: status,
+                })
+              );
+            }
+          }); 
+        } else if (action === "orderDeleted") {
+          const { orderId } = data; 
+          console.log(`Suppression de la commande`);
+
+          // Envoyer une notification de suppression aux clients
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  action: "orderStatus",
+                  status: "deleted",
+                  orderId,
+                })
+              );
+            }
+          });
+        } else if (action === "orderPaymentUpdated") {
+          const { orderId } = data; 
+          console.log(`Order payed`);
+
+          // Envoyer une notification de suppression aux clients
+          wss.clients.forEach((client) => {
+            if (client.readyState === WebSocket.OPEN) {
+              client.send(
+                JSON.stringify({
+                  action: "orderStatus",
+                  status: "payed",
+                  orderId,
                 })
               );
             }
